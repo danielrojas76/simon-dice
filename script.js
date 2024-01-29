@@ -1,5 +1,8 @@
+//////// selectores ////////
+
 const $cuadros = document.querySelectorAll(".cuadro");
 const $estado = document.querySelector("#estado");
+const $puntaje = document.querySelector("#puntaje");
 
 let sounds = {
   "cuadro-1": new Audio(
@@ -16,9 +19,14 @@ let sounds = {
   ),
 };
 
+// variables de rondas
 let secuenciaMaquina = [];
 let secuenciaUsuario = [];
 let ronda = 0;
+
+//variables de puntaje
+
+let puntajeActual = 0;
 
 document.querySelector("button[type=button]").onclick = comenzarJuego;
 
@@ -32,10 +40,17 @@ function comenzarJuego() {
 }
 
 function reiniciarEstado() {
+  // reinicio de rondas
   secuenciaMaquina = [];
   secuenciaUsuario = [];
   ronda = 0;
+
+  //reinicio de puntaje
+  puntajeActual = 0;
+  actualizarPuntaje();
 }
+
+///////// Logica de juego /////////
 
 function manejarRonda() {
   actualizarEstado("Turno de la máquina");
@@ -60,7 +75,9 @@ function manejarRonda() {
 
   secuenciaUsuario = [];
   ronda++;
+  
   actualizarNumeroRonda(ronda);
+  
 }
 
 function manejarInputUsuario(e) {
@@ -77,13 +94,19 @@ function manejarInputUsuario(e) {
   if (secuenciaUsuario.length === secuenciaMaquina.length) {
     bloquearInputUsuario();
     setTimeout(manejarRonda, 1000);
+    // actualizacion de puntaje
+    puntajeActual = puntajeActual + 100;
+    actualizarPuntaje();
   }
+
 }
 
 function obtenerCuadroAleatorio() {
   const indice = Math.floor(Math.random() * $cuadros.length);
   return $cuadros[indice];
 }
+
+//////// actualizacion de estados ////////
 
 function actualizarNumeroRonda(ronda) {
   document.querySelector("#ronda").textContent = ronda;
@@ -100,6 +123,12 @@ function actualizarEstado(estado, error = false) {
   }
 }
 
+function actualizarPuntaje() {
+  $puntaje.textContent = puntajeActual;
+}
+
+//////// utilidad ////////
+
 function resaltar($cuadro) {
   $cuadro.style.opacity = 1;
   const sonido = sounds[$cuadro.id];
@@ -111,17 +140,21 @@ function resaltar($cuadro) {
   }, 500);
 }
 
+//////// control input usuario ////////
+
 function bloquearInputUsuario() {
-  document.querySelectorAll(".cuadro").forEach(($cuadro) => {
+  $cuadros.forEach(($cuadro) => {
     $cuadro.onclick = function () {};
   });
 }
 
 function desbloquearInputUsuario() {
-  document.querySelectorAll(".cuadro").forEach(($cuadro) => {
+  $cuadros.forEach(($cuadro) => {
     $cuadro.onclick = manejarInputUsuario;
   });
 }
+
+//////// game over ////////
 
 function perder() {
   bloquearInputUsuario();
