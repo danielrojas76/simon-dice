@@ -1,6 +1,21 @@
 const $cuadros = document.querySelectorAll(".cuadro");
 const $estado = document.querySelector("#estado");
 
+let sounds = {
+  "cuadro-1": new Audio(
+    "https://s3.amazonaws.com/freecodecamp/simonSound2.mp3"
+  ),
+  "cuadro-2": new Audio(
+    "https://s3.amazonaws.com/freecodecamp/simonSound1.mp3"
+  ),
+  "cuadro-3": new Audio(
+    "https://s3.amazonaws.com/freecodecamp/simonSound4.mp3"
+  ),
+  "cuadro-4": new Audio(
+    "https://s3.amazonaws.com/freecodecamp/simonSound3.mp3"
+  ),
+};
+
 let secuenciaMaquina = [];
 let secuenciaUsuario = [];
 let ronda = 0;
@@ -87,6 +102,10 @@ function actualizarEstado(estado, error = false) {
 
 function resaltar($cuadro) {
   $cuadro.style.opacity = 1;
+  const sonido = sounds[$cuadro.id];
+  if (sonido) {
+    sonido.play();
+  }
   setTimeout(() => {
     $cuadro.style.opacity = 0.5;
   }, 500);
